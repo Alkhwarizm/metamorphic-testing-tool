@@ -32,25 +32,36 @@ class MetamorphicTesting {
     const reports = [];
     this.mrs.forEach((relation) => {
       const params = this.parameters;
-      const inputs = relation.transform(params);
-      
-      const reqs = inputs.map((input) => this.aut.wrap(input));
-      const resps = reqs.map((req) => {
-        req.method = this.method;
-        return send(this.uri, req);
-      });
-      const outputs = Promise.all(resps.map((resp) => this.aut.extract(resp)))
-        .then(outputs => {
-          const report = {inputs, outputs}
-          report.result = relation.assert(outputs);
-          return report;
-        });
+
+      const results = []
+      for (let i = 0; i < relation.testCaseCount; i++) {
+        // create test cases
+        const inputs = relation.transform(params);
+        
+         // wrap inputs into requests
+        const reqs = inputs.map((input) => this.aut.wrap(input));
+        // send request and receive response
+        const resps = reqs.map((req) => {
+          req.method = this.method;
+          return send(this.uri, req);
+        }); 
+
+        // extract outputs from request
+        const outputs = Promise.all(resps.map((resp) => this.aut.extract(resp)))
+          .then(outputs => {
+            const report = {inputs, outputs}
+            report.result = relation.assert(outputs);
+            return report;
+          });
+        
+        results.push(outputs);
+      }
       
       const report = new Promise((resolve, reject) => {
-        outputs.then(results => {
+        Promise.all(results).then(testResult => {
           resolve({
             relation,
-            results
+            testCases: testResult
           })
         })
       })
