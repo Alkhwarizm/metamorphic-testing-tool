@@ -52,18 +52,19 @@ class MetamorphicTesting {
             const report = {inputs, outputs}
             report.result = relation.assert(outputs);
             return report;
+          })
+          .catch(err => {
+            return { error: err.statusCode };
           });
         
         results.push(outputs);
       }
       
       const report = new Promise((resolve, reject) => {
-        Promise.all(results).then(testResult => {
-          resolve({
-            relation,
-            testCases: testResult
-          })
-        })
+        Promise.all(results)
+          .then(testResult => {
+            resolve({ relation, testCases: testResult })
+          });
       })
       reports.push(report);
     })

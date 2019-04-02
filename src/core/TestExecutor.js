@@ -17,14 +17,20 @@ function display(result) {
     result.forEach(el => {
         log(chalk.bold.green.inverse(el.relation.description));
         el.testCases.forEach(testcase => {
-            const text = `---- Inputs: [${testcase.inputs.map(i => JSON.stringify(i)).join(', ')}] \n---- Outputs: [${testcase.outputs.join(', ')}]`
-            if (testcase.result) {
-                log(chalk.green.bold('-- Passed'))
-                log(chalk.green(text));
+            if (testcase.error) {
+                log(chalk`{red.inverse Error:} {redBright ${testcase.error}}`);
             } else {
-                log(chalk.red.bold('-- Failed'))
-                log(chalk.red(text));
+                const text = `---- Inputs: [${testcase.inputs.map(i => JSON.stringify(i)).join(', ')}] \n---- Outputs: [${testcase.outputs.join(', ')}]`
+               
+                if (testcase.result) {
+                    log(chalk.green.bold('-- Passed'))
+                    log(chalk.green(text));
+                } else {
+                    log(chalk.red.bold('-- Failed'))
+                    log(chalk.red(text));
+                }
             }
+
         })
     });
 }
@@ -44,6 +50,9 @@ class TestExecutor {
             .then(result => {
                 result.summary = calculateSummary(result);
                 display(result) // display(result)
+            })
+            .catch(err => {
+                console.log(err);
             });
     }
 }
