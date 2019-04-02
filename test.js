@@ -44,7 +44,7 @@ const rlFn1 = (outputs) => {
     // compares outputs and return boolean value
     return outputs[0] === outputs[1];
 }
-const mr1 = new MetamorphicRelation(trFn1, rlFn1);
+const mr1 = new MetamorphicRelation(trFn1, rlFn1, 'Same value every 2Pi.', 5);
 
 const trFn2 = (parameters) => {
     const source = { x: 5 };
@@ -54,7 +54,7 @@ const trFn2 = (parameters) => {
 const rlFn2 = (outputs) => {
     return outputs[0] === -outputs[1];
 }
-const mr2 = new MetamorphicRelation(trFn2, rlFn2);
+const mr2 = new MetamorphicRelation(trFn2, rlFn2, 'Negative value every Pi.');
 
 const trFn3 = (parameters) => {
     const source = { x: 2 };
@@ -64,7 +64,7 @@ const trFn3 = (parameters) => {
 const rlFn3 = (outputs) => {
     return outputs[0] > outputs[1];
 }
-const mr3 = new MetamorphicRelation(trFn3, rlFn3);
+const mr3 = new MetamorphicRelation(trFn3, rlFn3, 'Descending value in (4n+1)Pi/2 to (4n+3)Pi/2 interval.');
 
 const trFn4 = (parameters) => {
     const source = { x: -1 };
@@ -74,10 +74,10 @@ const trFn4 = (parameters) => {
 const rlFn4 = (outputs) => {
     return outputs[0] < outputs[1];
 }
-const mr4 = new MetamorphicRelation(trFn4, rlFn4);
+const mr4 = new MetamorphicRelation(trFn4, rlFn4, 'Ascending value in (4n-1)Pi/2 to (4n+1)Pi/2 interval.');
 
 
 const test = new MetamorphicTesting(api);
-test.addRelation(mr1);
+test.addRelation(mr1, mr2, mr3, mr4);
 
 TestExecutor.execute(test);
