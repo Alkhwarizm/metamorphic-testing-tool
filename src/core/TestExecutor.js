@@ -2,6 +2,18 @@ const chalk = require('chalk');
 const log = console.log;
 
 function display(result) {
+    const {
+        totalRelations,
+        totalTestCase,
+        failedRelations,
+        failedTestCase,
+    } = result.summary;
+    log(chalk`
+        {yellow.bold.inverse SUMMARY}
+        {yellow Relations: {${failedRelations ? 'red' : 'green'} ${totalRelations - failedRelations}/${totalRelations}}}
+        {yellow Test Cases: {${failedTestCase ? 'red' : 'green'} ${totalTestCase - failedTestCase}/${totalTestCase}}}
+    `)
+
     result.forEach(el => {
         log(chalk.bold.green.inverse(el.relation.description));
         el.testCases.forEach(testcase => {
@@ -17,10 +29,20 @@ function display(result) {
     });
 }
 
+function calculateSummary(result) {
+    return {
+        totalRelations: result.length,
+        totalTestCase: result.map(r => r.testCases.length).reduce((acc, curr) => acc + curr),
+        failedRelations: result.filter(r => r.testCases.filter(t => !t.result).length).length,
+        failedTestCase: result.reduce((acc, curr) => acc.concat(curr.testCases), []).filter(t => !t.result).length,
+    }
+}
+
 class TestExecutor {
     static execute(metamorphicTest) {
-        const result = Promise.all(metamorphicTest.execute())
+        Promise.all(metamorphicTest.execute())
             .then(result => {
+                result.summary = calculateSummary(result);
                 display(result) // display(result)
             });
     }
