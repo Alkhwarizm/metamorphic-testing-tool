@@ -18,9 +18,7 @@ const parameters = {
 const wrapper = (input) => {
     // input is like parameters with specific values for each properties
     return {
-        qs: {
-            x: input.x,
-        }
+        qs: input
     }
     // it return request-promise options object
 }
