@@ -6,6 +6,8 @@ const {
     helper
 } = require('./index.js');
 
+const ACCESS_TOKEN = 'Bearer d6147d8858b12f4a60c1ebc4e4aaff4aea6c465a88e0d5fe29d0142479ccb409';
+
 const address = {
     uri: 'https://kitsu.io/api/edge/categories',
     method: 'GET',
@@ -24,7 +26,8 @@ const wrapper = (input) => {
         qs: input,
         headers: {
             'Accept': 'application/vnd.api+json',
-            'Content-Type': 'application/vnd.api+json'
+            'Content-Type': 'application/vnd.api+json',
+            'Authorization': ACCESS_TOKEN,
         },
         json: true
     }
