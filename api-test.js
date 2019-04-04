@@ -34,6 +34,7 @@ const wrapper = (input) => {
 const extractor = (resp) => {
     // resp is promise returned by request-promise
     return resp.then((jsonResp) => {
+        if (jsonResp.data.length === 0) return Promise.reject('empty');
         return jsonResp.data.map(item => item.id); // only take the id
     });
     // it return object or list that will be compared by metamorphic relation
@@ -58,6 +59,22 @@ const rFn1 = (outputs) => {
 }
 const mr1 = new MetamorphicRelation(tFn1, rFn1, 'Should return same items even when sorted');
 
-const test = new MetamorphicTesting(api, [mr1]);
+const tFn2 = (parameters) => {
+    const source = {
+        'page[limit]': 300,
+        'filter[nsfw]': false,
+    }
+    const following = {
+        'page[limit]': source["page[limit]"],
+        'filter[nsfw]': true,
+    }
+    return [source, following]
+}
+const rFn2 = (outputs) => {
+    return outputs[0].every(el => !outputs[1].includes(el));
+}
+const mr2 = new MetamorphicRelation(tFn2, rFn2, 'Should return exactly different items')
+
+const test = new MetamorphicTesting(api, [mr2]);
 
 TestExecutor.execute(test);

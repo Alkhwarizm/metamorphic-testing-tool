@@ -54,7 +54,8 @@ class MetamorphicTesting {
             return report;
           })
           .catch(err => {
-            return { error: err.statusCode };
+            console.log(err);
+            return { error: err.statusCode || err || 'unknown error' };
           });
         
         results.push(outputs);
