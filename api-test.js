@@ -34,7 +34,6 @@ const wrapper = (input) => {
 const extractor = (resp) => {
     // resp is promise returned by request-promise
     return resp.then((jsonResp) => {
-        if (jsonResp.data.length === 0) return Promise.reject('empty');
         return jsonResp.data.map(item => item.id); // only take the id
     });
     // it return object or list that will be compared by metamorphic relation
@@ -71,6 +70,8 @@ const tFn2 = (parameters) => {
     return [source, following]
 }
 const rFn2 = (outputs) => {
+    if (outputs[0].length === 0) throw new Error('empty source output');
+    if (outputs[1].length === 0) throw new Error('empty following output');
     return outputs[0].every(el => !outputs[1].includes(el));
 }
 const mr2 = new MetamorphicRelation(tFn2, rFn2, 'Should return exactly different items')
