@@ -4,7 +4,7 @@ const {
     APIUnderTest,
     TestExecutor,
     helper
-} = require('./index.js');
+} = require('../index.js');
 
 const address = {
     uri: 'http://localhost:3333/cos',
