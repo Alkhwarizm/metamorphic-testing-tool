@@ -1,4 +1,7 @@
-const display = require('../utils/display.js');
+const {
+    displayExecution, 
+    displayReport
+} = require('../utils/display.js');
 
 function calculateSummary(result) {
     return {
@@ -13,10 +16,11 @@ function calculateSummary(result) {
 
 class TestExecutor {
     static execute(metamorphicTest) {
+        displayExecution(metamorphicTest.aut, metamorphicTest.mrs);
         Promise.all(metamorphicTest.execute())
             .then(result => {
                 result.summary = calculateSummary(result);
-                display(result) // display(result)
+                displayReport(result) 
             })
             .catch(err => {
                 console.log(err);

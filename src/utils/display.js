@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const log = console.log;
 
 function showTitle() {
-
+    log(chalk``);
 }
 
 function showSummary(summary) {
@@ -52,10 +52,23 @@ function showTestCase(testcase) {
     }
 }
 
-function display(results) {
+function displayReport(results) {
     showTitle();
     showAllResults(results);    
     showSummary(results.summary);
 }
 
-module.exports = display
+function displayExecution(address, mrs) {
+    const relationCount = mrs.length;
+    const testCaseCount = mrs.reduce((acc, curr) => acc + curr.testCaseCount, 0);
+    log(chalk`
+        {yellow.bold.inverse TEST EXECUTION}
+        {yellow Operation: }{white ${address.httpMethod} ${address.uri}}
+        {yellow Executing ${testCaseCount} test cases from ${relationCount} relations...}
+    `);
+}
+
+module.exports = {
+    displayReport,
+    displayExecution
+}
