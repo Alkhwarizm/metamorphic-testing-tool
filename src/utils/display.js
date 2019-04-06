@@ -8,14 +8,16 @@ function showTitle() {
 function showSummary(summary) {
     const {
         totalRelations,
-        totalTestCase,
+        totalTestCases,
         failedRelations,
-        failedTestCase,
+        failedTestCases,
+        passedRelations,
+        passedTestCases
     } = summary;
     log(chalk`
         {yellow.bold.inverse SUMMARY}
-        {yellow Relations: {${failedRelations ? 'red' : 'green'} ${totalRelations - failedRelations}/${totalRelations}}}
-        {yellow Test Cases: {${failedTestCase ? 'red' : 'green'} ${totalTestCase - failedTestCase}/${totalTestCase}}}
+        {yellow Relations: {${failedRelations ? 'red' : 'green'} ${passedRelations}/${totalRelations}}}
+        {yellow Test Cases: {${failedTestCases ? 'red' : 'green'} ${passedTestCases}/${totalTestCases}}}
     `)
 }
 
@@ -37,7 +39,7 @@ function showTestCase(testcase) {
         const color = testcase.result ? 'green' : 'red';
         const textResult = testcase.result ? 'Passed' : 'Failed';
 
-        log(chalk`{${color} -- ${textResult}}`);
+        log(chalk`{bold.${color} -- ${textResult}}`);
         testcase.inputs.forEach((input, idx) => {
             const textInput = JSON.stringify(input);
             const textOutput = testcase.outputs[idx];

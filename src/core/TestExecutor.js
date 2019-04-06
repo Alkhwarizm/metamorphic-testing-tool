@@ -3,9 +3,11 @@ const display = require('../utils/display.js');
 function calculateSummary(result) {
     return {
         totalRelations: result.length,
-        totalTestCase: result.map(r => r.testCases.length).reduce((acc, curr) => acc + curr),
-        failedRelations: result.filter(r => r.testCases.filter(t => !t.result).length).length,
-        failedTestCase: result.reduce((acc, curr) => acc.concat(curr.testCases), []).filter(t => !t.result).length,
+        totalTestCases: result.reduce((acc, curr) => acc + curr.meta.total, 0),
+        failedRelations: result.filter(r => !r.meta.result).length,
+        failedTestCases: result.reduce((acc, curr) => acc + curr.meta.failed, 0),
+        passedRelations: result.filter(r => r.meta.result).length,
+        passedTestCases: result.reduce((acc, curr) => acc + curr.meta.passed, 0),
     }
 }
 
