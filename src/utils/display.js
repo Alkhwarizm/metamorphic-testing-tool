@@ -20,27 +20,33 @@ function showSummary(summary) {
 }
 
 function showAllResults(results) {
-    results.forEach(relation => showMetamorphicRelation(relation));
+    results.forEach(result => showMetamorphicRelation(result));
 }
 
-function showMetamorphicRelation(relation) {
-    log(chalk.bold.green.inverse(relation.relation.description));
-    relation.testCases.forEach(testcase => showTestCase(testcase));
+function showMetamorphicRelation(result) {
+    const color = result.meta.result ? 'green' : 'red'
+    log(chalk`{bold.${color}.inverse ${result.relation.description}}`);
+    log(chalk`{${color} Passed Test Case(s): ${result.meta.passed}/${result.meta.total}}`);
+    result.testCases.forEach(testcase => showTestCase(testcase));
 }
 
 function showTestCase(testcase) {
     if (testcase.error) {
         log(chalk`{red.inverse Error:} {redBright ${testcase.error}}`);
     } else {
-        const text = `---- Inputs: [${testcase.inputs.map(i => JSON.stringify(i)).join(', ')}] \n---- Outputs: [${testcase.outputs.join(', ')}]`
-        
-        if (testcase.result) {
-            log(chalk.green.bold('-- Passed'))
-            log(chalk.green(text));
-        } else {
-            log(chalk.red.bold('-- Failed'))
-            log(chalk.red(text));
-        }
+        const color = testcase.result ? 'green' : 'red';
+        const textResult = testcase.result ? 'Passed' : 'Failed';
+
+        log(chalk`{${color} -- ${textResult}}`);
+        testcase.inputs.forEach((input, idx) => {
+            const textInput = JSON.stringify(input);
+            const textOutput = testcase.outputs[idx];
+            if (idx === 0) {
+                log(chalk`{${color} ---- source: ${textInput} -> ${textOutput}}`);
+            } else {
+                log(chalk`{${color} ---- foll_${idx}: ${textInput} -> ${textOutput}}`);
+            }
+        })
     }
 }
 

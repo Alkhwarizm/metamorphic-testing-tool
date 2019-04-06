@@ -7,7 +7,7 @@ const {
 } = require('./index.js');
 
 const address = {
-    uri: 'http://localhost:3333/sin',
+    uri: 'http://localhost:3333/cos',
     method: 'GET',
 };
 

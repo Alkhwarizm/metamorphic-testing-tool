@@ -64,7 +64,13 @@ class MetamorphicTesting {
       const report = new Promise((resolve, reject) => {
         Promise.all(results)
           .then(testResult => {
-            resolve({ relation, testCases: testResult })
+            const meta = {
+              total: testResult.length,
+              passed: testResult.filter(tc => tc.result).length,
+              failed: testResult.filter(tc => !tc.result).length
+            }
+            meta.result = meta.total === meta.passed;
+            resolve({ meta, relation, testCases: testResult })
           });
       })
       reports.push(report);
