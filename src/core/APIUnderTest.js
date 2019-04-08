@@ -9,8 +9,16 @@ class APIUnderTest {
 		return this.address.uri;
 	}
 
+	set uri(uri) {
+		this.address.uri = uri;
+	}
+
 	get httpMethod() {
 		return this.address.method;
+	}
+
+	set httpMethod(method) {
+		this.address.method = method;
 	}
 
 	wrap(input) {
