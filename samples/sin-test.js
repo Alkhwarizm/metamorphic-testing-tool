@@ -1,5 +1,5 @@
 const MetamorphicTest = require('../index.js');
-const helper = require('../src/helper/helpers.js');
+const helper = MetamorphicTest.helper
 const test = new MetamorphicTest();
 
 test.defineAPI('http://localhost:3333/cos', 'GET', {x: 'number'});

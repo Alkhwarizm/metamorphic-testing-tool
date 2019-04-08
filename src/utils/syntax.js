@@ -45,6 +45,8 @@ class TestInterface {
     execute() {
         TestExecutor.execute(this.test);
     }
+
 }
 
+TestInterface.helper = helpers;
 module.exports = TestInterface;
