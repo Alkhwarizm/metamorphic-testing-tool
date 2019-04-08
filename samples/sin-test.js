@@ -5,7 +5,10 @@ const {
     TestExecutor,
     helper
 } = require('../index.js');
+// const MetamorphicTest = require
+// const test = new MetamorphicTest(uri, method, parameters, {wrapper, extractor})
 
+// test.defineAPI(uri, method, parameters)
 const address = {
     uri: 'http://localhost:3333/cos',
     method: 'GET',
@@ -15,6 +18,7 @@ const parameters = {
     x: 'number',
 }
 
+// test.setWrapper(wrapperFn)
 const wrapper = (input) => {
     // input is like parameters with specific values for each properties
     return {
@@ -23,6 +27,7 @@ const wrapper = (input) => {
     // it return request-promise options object
 }
 
+// test.setExtractor(extractorFn)
 const extractor = (resp) => {
     // resp is promise returned by request-promise
     return resp.then((htmlString) => {
@@ -31,8 +36,11 @@ const extractor = (resp) => {
     // it return object or list that will be compared by metamorphic relation
 }
 
+//
 const api = new APIUnderTest(address, parameters, {wrapper, extractor});
 
+
+// test.addRelation(description, trFn, rlFn, testCaseCount)
 const trFn1 = (parameters) => {
     const source = { x: helper.getRandomFloat(-100, 100) }; // source input or i0
     const following = { x: source.x + 2*Math.PI }; // following input or i1 and onward
@@ -86,4 +94,5 @@ const mr4 = new MetamorphicRelation(trFn4, rlFn4, 'Ascending value in (4n-1)Pi/2
 const test = new MetamorphicTesting(api);
 test.addRelation(mr1, mr2, mr3, mr4);
 
+// test.execute();
 TestExecutor.execute(test);
