@@ -7,6 +7,10 @@ const argv = require('yargs')
     .nargs('d', 1)
     .describe('d', 'Load a directory')
     .default('d', 'tests')
+    .example('$0 run -f test.js', 'Run a metamorphic tests defined in test.js.')
+    .alias('f', 'file')
+    .nargs('f', 1)
+    .describe('f', 'Load a file')
     .help('h')
     .alias('h', 'help')
     .argv;
@@ -14,11 +18,15 @@ const argv = require('yargs')
 const fs = require('fs');
 const path = require('path');
 
-const filepaths = fs.readdirSync(argv.d).map(file => {
-    return path.join(process.cwd(), argv.d, file);
-});
+if (argv.f) {
+    const filepath = path.join(process.cwd(), argv.f);
+    require(filepath);
+} else {
+    const filepaths = fs.readdirSync(argv.d).map(file => {
+        return path.join(process.cwd(), argv.d, file);
+    });
 
-console.log(filepaths);
-filepaths.forEach(file => {
-    require(file)
-})
+    filepaths.forEach(file => {
+        require(file)
+    })
+}
