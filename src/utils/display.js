@@ -1,8 +1,37 @@
 const chalk = require('chalk');
+const createUI = require('cliui');
 const log = console.log;
 
 function showTitle() {
     log(chalk``);
+}
+
+function createResultSummaryTable(contents) {
+    const ui = createUI();
+    const headerColor = 'bold.inverse';
+    const rowColor = 'white';
+    const defaultColSetting = { width: 12 }
+    const firstColSetting = { width: 6, padding: [0, 1, 0, 0], align: 'right'  }
+    const thirdColSetting = { width: 12, padding: [0, 1, 0, 0], align: 'right'  }
+    ui.div({ text: chalk`{bold METAMORPHIC TEST RESULT}`, padding: [1, 1, 1, 1], align: 'center'})
+    ui.div(
+        { text: chalk`{${headerColor} Test}`, ...firstColSetting }, 
+        { text: chalk`{${headerColor} Relations}`, },
+        { text: chalk`{${headerColor} Test Cases}`, ...thirdColSetting },
+        { text: chalk`{${headerColor} Failed}`, ...defaultColSetting },
+        { text: chalk`{${headerColor} Percentage}`, ...defaultColSetting }, 
+    );
+    contents.forEach((row, idx) => {
+        const percentage = Number.parseFloat(row.passed/row.testCases*100).toFixed(2);
+        ui.div(
+            { text: chalk`{${rowColor} ${idx}}`, ...firstColSetting }, 
+            { text: chalk`{${rowColor} ${row.relation.description}}`, },
+            { text: chalk`{${rowColor} ${row.testCases}}`, ...thirdColSetting },
+            { text: chalk`{${rowColor} ${row.failed}}`, ...defaultColSetting },
+            { text: chalk`{${rowColor} ${percentage}%}`, ...defaultColSetting }, 
+        );
+    });
+    return ui.toString();
 }
 
 function showSummary(summary) {
@@ -12,8 +41,11 @@ function showSummary(summary) {
         failedRelations,
         failedTestCases,
         passedRelations,
-        passedTestCases
+        passedTestCases,
+        details
     } = summary;
+
+    log(createResultSummaryTable(details));
     log(chalk`
         {yellow.bold.inverse SUMMARY}
         {yellow Relations: {${failedRelations ? 'red' : 'green'} ${passedRelations}/${totalRelations}}}
