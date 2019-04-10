@@ -66,5 +66,7 @@ function runTest(argv) {
 }
 
 function initTest(argv) {
-    console.log(argv.path);
+    const source = path.join(__dirname, 'boilerplate.js');
+    const dest = path.join(process.cwd(), argv.path);
+    fs.copyFileSync(source, dest);
 }

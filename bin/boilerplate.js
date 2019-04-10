@@ -12,7 +12,10 @@ test.defineAPI(
 test.setWrapper((input) => {
     // return request-promise options object
     return {
-        qs: input
+        qs: {
+            q: input.q,
+            hl: 'en', // to set the page to english
+        }
     }
 })
 
@@ -20,8 +23,8 @@ test.setWrapper((input) => {
 test.setExtractor((resp) => {
     // return a thenable promise
     return resp.then((htmlString) => {
-        const regex = /About ([0-9,]*) results/
-        return Number.parseInt(htmlString.match(regex)[1]);
+        const regex = /About ([0-9,]*) results/;
+        return Number.parseInt(htmlString.match(regex)[1].replace(/,/g, ''));
     });
 })
 
@@ -34,7 +37,7 @@ test.addRelation('Less result for more specific search query', // human readable
             q: helper.chooseRandomElement(words),
         }; // source input or i0
         const following = { 
-            q: source.q + helper.chooseRandomElement(words), 
+            q: source.q + ' ' + helper.chooseRandomElement(words), 
         }; // following input or i1 and onward
         return [source, following]
     }, (outputs) => {
