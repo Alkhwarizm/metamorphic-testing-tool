@@ -5,7 +5,28 @@ const {
 } = require('../utils/display.js');
 
 function getExecutionSummary(results) {
-    
+    const details = results.map((result, idx) => {
+        return {
+            test: {
+                idx,
+                target: result.target,
+            },
+            relations: result.summary.details,
+            overview: result.summary.overview,
+        }
+    });
+    const overview = {
+        totalTests: details.length,
+        totalRelations: details.reduce((acc, curr) => acc + curr.overview.totalRelations, 0),
+        totalTestCases: details.reduce((acc, curr) => acc + curr.overview.totalTestCases, 0),
+        failedTests: details.filter(t => t.overview.failedRelations).length,
+        failedRelations: details.reduce((acc, curr) => acc + curr.overview.failedRelations, 0),
+        failedTestCases: details.reduce((acc, curr) => acc + curr.overview.failedTestCases, 0),
+        passedTests: details.filter(t => !t.overview.failedRelations).length,
+        passedRelations: details.reduce((acc, curr) => acc + curr.overview.passedRelations, 0),
+        passedTestCases: details.reduce((acc, curr) => acc + curr.overview.passedTestCases, 0),
+    }
+    return { details, overview }
 }
 
 function getTestSummary(result) {
@@ -39,6 +60,7 @@ class TestExecutor {
         displayExecution(metamorphicTest.aut, metamorphicTest.mrs);
         return Promise.all(metamorphicTest.execute())
             .then(result => {
+                result.target = metamorphicTest.aut;
                 result.summary = getTestSummary(result);
                 return result;
             })
@@ -49,8 +71,9 @@ class TestExecutor {
 
     static async displayTestReport(report) {
         try {
-            displayReport(await report);
-            // displaySummary()
+            const executionReport = await report
+            displayReport(executionReport);
+            // displaySummary(getExecutionSummary([executionReport]));
         } catch (err) {
             console.log(err);
         }
