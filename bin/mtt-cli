@@ -15,15 +15,30 @@ yargs
                     alias: 'directory',
                     default: 'tests',
                     describe: 'specifies metamorphic test directory to be run',
+                    requiresArg: true,
                     nargs: 1
                 },
                 'f': {
                     alias: 'file',
                     describe: 'specifies metamorphic test file to be run',
+                    requiresArg: true
                 }
             })
         },
         runTest
+    )
+    .command(
+        'add <path>',
+        'Create new metamorphic test file with boilerplate in the specified path.',
+        function (yargs) {
+            return yargs.positional('path', {
+                describe: 'path into which the new test will be created',
+                requiresArg: true,
+                normalize: true,
+                nargs: 1
+            })
+        },
+        initTest
     )
     .example('$0 run -d tests', 'Run all metamorphic tests in /tests directory.')
     .example('$0 run -f test.js', 'Run a metamorphic tests defined in test.js.')
@@ -48,4 +63,8 @@ function runTest(argv) {
         const testReports = TestExecutor.executeAll(tests);
         TestExecutor.displayAllTestReport(testReports);
     }
+}
+
+function initTest(argv) {
+    console.log(argv.path);
 }
