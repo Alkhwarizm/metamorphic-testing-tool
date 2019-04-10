@@ -21,15 +21,15 @@ const TestExecutor = require('../src/core/TestExecutor.js');
 
 if (argv.f) {
     const filepath = path.join(process.cwd(), argv.f);
-    const testReport = require(filepath).execute();
+    const testReport = TestExecutor.execute(require(filepath).test);
     TestExecutor.displayTestReport(testReport);
-    
+
 } else {
     const filepaths = fs.readdirSync(argv.d).map(file => {
         return path.join(process.cwd(), argv.d, file);
     });
 
-    filepaths.forEach(file => {
-        require(file)
-    })
+    const tests = filepaths.map(file => require(file).test);
+    const testReports = TestExecutor.executeAll(tests);
+    TestExecutor.displayAllTestReport(testReports);
 }

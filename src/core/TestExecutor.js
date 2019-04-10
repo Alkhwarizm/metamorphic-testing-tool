@@ -80,9 +80,10 @@ class TestExecutor {
     }
 
     static executeAll(metamorphicTests) {
-        const report = metamorphicTests.map(test => {
+        const reports = metamorphicTests.map(test => {
             return Promise.all(test.execute())
                 .then(result => {
+                    result.target = test.aut;
                     result.summary = getTestSummary(result);
                     return result;
                 })
@@ -90,6 +91,17 @@ class TestExecutor {
                     console.log(err);
                 })
         });
+        return reports;
+    }
+
+    static async displayAllTestReport(reports) {
+        try {
+            const executionReports = await Promise.all(reports);
+            executionReports.forEach(report => displayReport(report))
+            displaySummary(getExecutionSummary(executionReports));
+        } catch (err) {
+            console.log(err);
+        }
     }
 }
 
