@@ -1,35 +1,51 @@
 #!/usr/bin/env node
-const argv = require('yargs')
+const fs = require('fs');
+const path = require('path');
+const yargs = require('yargs');
+const TestExecutor = require('../src/core/TestExecutor.js');
+
+yargs
     .usage('Usage: $0 <command> [options]')
-    .command('run', 'Run metamorphic tests in the directory.')
+    .command(
+        'run', 
+        'Run metamorphic tests in the directory.',
+        function (yargs) {
+            return yargs.options({
+                'd': {
+                    alias: 'directory',
+                    default: 'tests',
+                    describe: 'specifies metamorphic test directory to be run',
+                    nargs: 1
+                },
+                'f': {
+                    alias: 'file',
+                    describe: 'specifies metamorphic test file to be run',
+                }
+            })
+        },
+        runTest
+    )
     .example('$0 run -d tests', 'Run all metamorphic tests in /tests directory.')
-    .alias('d', 'directory')
-    .nargs('d', 1)
-    .describe('d', 'Load a directory')
-    .default('d', 'tests')
     .example('$0 run -f test.js', 'Run a metamorphic tests defined in test.js.')
-    .alias('f', 'file')
-    .nargs('f', 1)
-    .describe('f', 'Load a file')
+    .demandCommand(1)
     .help('h')
     .alias('h', 'help')
     .argv;
 
-const fs = require('fs');
-const path = require('path');
-const TestExecutor = require('../src/core/TestExecutor.js');
 
-if (argv.f) {
-    const filepath = path.join(process.cwd(), argv.f);
-    const testReport = TestExecutor.execute(require(filepath).test);
-    TestExecutor.displayTestReport(testReport);
-
-} else {
-    const filepaths = fs.readdirSync(argv.d).map(file => {
-        return path.join(process.cwd(), argv.d, file);
-    });
-
-    const tests = filepaths.map(file => require(file).test).reverse();
-    const testReports = TestExecutor.executeAll(tests);
-    TestExecutor.displayAllTestReport(testReports);
+function runTest(argv) {
+    if (argv.f) {
+        const filepath = path.join(process.cwd(), argv.f);
+        const testReport = TestExecutor.execute(require(filepath).test);
+        TestExecutor.displayTestReport(testReport);
+    
+    } else {
+        const filepaths = fs.readdirSync(argv.d).map(file => {
+            return path.join(process.cwd(), argv.d, file);
+        });
+    
+        const tests = filepaths.map(file => require(file).test).reverse();
+        const testReports = TestExecutor.executeAll(tests);
+        TestExecutor.displayAllTestReport(testReports);
+    }
 }
