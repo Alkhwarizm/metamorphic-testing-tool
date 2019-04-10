@@ -8,7 +8,7 @@ function getExecutionSummary(results) {
     const details = results.map((result, idx) => {
         return {
             test: {
-                idx,
+                idx: idx+1,
                 target: result.target,
             },
             relations: result.summary.details,
@@ -73,7 +73,7 @@ class TestExecutor {
         try {
             const executionReport = await report
             displayReport(executionReport);
-            // displaySummary(getExecutionSummary([executionReport]));
+            displaySummary(getExecutionSummary([executionReport]));
         } catch (err) {
             console.log(err);
         }
