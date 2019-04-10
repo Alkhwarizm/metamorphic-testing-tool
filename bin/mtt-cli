@@ -29,7 +29,7 @@ if (argv.f) {
         return path.join(process.cwd(), argv.d, file);
     });
 
-    const tests = filepaths.map(file => require(file).test);
+    const tests = filepaths.map(file => require(file).test).reverse();
     const testReports = TestExecutor.executeAll(tests);
     TestExecutor.displayAllTestReport(testReports);
 }

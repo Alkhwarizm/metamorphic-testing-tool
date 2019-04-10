@@ -96,8 +96,8 @@ class TestExecutor {
 
     static async displayAllTestReport(reports) {
         try {
+            reports.forEach(async report => displayReport(await report))
             const executionReports = await Promise.all(reports);
-            executionReports.forEach(report => displayReport(report))
             displaySummary(getExecutionSummary(executionReports));
         } catch (err) {
             console.log(err);
