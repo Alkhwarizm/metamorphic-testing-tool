@@ -8,12 +8,12 @@ function showTitle() {
 
 function createResultSummaryTable(contents) {
     const ui = createUI();
-    const headerColor = 'bold.inverse';
-    const rowColor = 'white';
+    const headerColor = 'bold.inverse.yellow';
+    const rowColor = (failed) => failed ? 'red' : 'green';
     const defaultColSetting = { width: 12 }
     const firstColSetting = { width: 6, padding: [0, 1, 0, 0], align: 'right'  }
     const thirdColSetting = { width: 12, padding: [0, 1, 0, 0], align: 'right'  }
-    ui.div({ text: chalk`{bold METAMORPHIC TEST RESULT}`, padding: [1, 1, 1, 1], align: 'center'})
+    ui.div({ text: chalk`{bold.yellow METAMORPHIC TEST RESULT}`, padding: [1, 1, 1, 1], align: 'center'})
     ui.div(
         { text: chalk`{${headerColor} Test}`, ...firstColSetting }, 
         { text: chalk`{${headerColor} Relations}`, },
@@ -23,12 +23,13 @@ function createResultSummaryTable(contents) {
     );
     contents.forEach((row, idx) => {
         const percentage = Number.parseFloat(row.passed/row.testCases*100).toFixed(2);
+        const color = rowColor(row.failed);
         ui.div(
-            { text: chalk`{${rowColor} ${idx}}`, ...firstColSetting }, 
-            { text: chalk`{${rowColor} ${row.relation.description}}`, },
-            { text: chalk`{${rowColor} ${row.testCases}}`, ...thirdColSetting },
-            { text: chalk`{${rowColor} ${row.failed}}`, ...defaultColSetting },
-            { text: chalk`{${rowColor} ${percentage}%}`, ...defaultColSetting }, 
+            { text: chalk`{${color} ${idx+1}}`, ...firstColSetting }, 
+            { text: chalk`{${color} ${row.relation.description}}`, },
+            { text: chalk`{${color} ${row.testCases}}`, ...thirdColSetting },
+            { text: chalk`{${color} ${row.failed}}`, ...defaultColSetting },
+            { text: chalk`{${color} ${percentage}%}`, ...defaultColSetting }, 
         );
     });
     return ui.toString();
