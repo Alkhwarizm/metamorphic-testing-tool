@@ -104,7 +104,6 @@ function showTestCase(testcase) {
 function displayReport(results) {
     showTitle();
     showAllResults(results);    
-    showSummary(results.summary);
 }
 
 function displayExecution(address, mrs) {
@@ -117,7 +116,11 @@ function displayExecution(address, mrs) {
     `);
 }
 
+function displaySummary(resultSummary) {
+    showSummary(resultSummary);
+}
 module.exports = {
     displayReport,
-    displayExecution
+    displayExecution,
+    displaySummary
 }
