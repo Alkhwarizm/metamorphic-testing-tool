@@ -56,20 +56,6 @@ function createResultSummaryTable(contents) {
     return ui.toString();
 }
 
-function showSummary(summary) {
-    const {
-        totalRelations,
-        totalTestCases,
-        failedRelations,
-        failedTestCases,
-        passedRelations,
-        passedTestCases,
-        details
-    } = summary;
-
-    log(createResultSummaryTable(details));
-}
-
 function showAllResults(results) {
     results.forEach(result => showMetamorphicRelation(result));
 }
@@ -117,8 +103,9 @@ function displayExecution(address, mrs) {
 }
 
 function displaySummary(resultSummary) {
-    showSummary(resultSummary);
+    log(createResultSummaryTable(resultSummary.details));
 }
+
 module.exports = {
     displayReport,
     displayExecution,

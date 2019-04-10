@@ -43,7 +43,8 @@ class TestInterface {
     }
 
     execute() {
-        TestExecutor.execute(this.test);
+        this.result = TestExecutor.execute(this.test);
+        return this.result;
     }
 
 }

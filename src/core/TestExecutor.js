@@ -1,9 +1,14 @@
 const {
     displayExecution, 
-    displayReport
+    displayReport,
+    displaySummary
 } = require('../utils/display.js');
 
-function calculateSummary(result) {
+function getExecutionSummary(results) {
+    
+}
+
+function getTestSummary(result) {
     const details = result.map((item, idx) => {
         return {
             relation: {
@@ -15,13 +20,16 @@ function calculateSummary(result) {
             passed: item.meta.passed,
         }
     });
-    return {
+    const overview = {
         totalRelations: result.length,
         totalTestCases: result.reduce((acc, curr) => acc + curr.meta.total, 0),
         failedRelations: result.filter(r => !r.meta.result).length,
         failedTestCases: result.reduce((acc, curr) => acc + curr.meta.failed, 0),
         passedRelations: result.filter(r => r.meta.result).length,
         passedTestCases: result.reduce((acc, curr) => acc + curr.meta.passed, 0),
+    }
+    return {
+        overview,
         details,
     }
 }
@@ -29,18 +37,36 @@ function calculateSummary(result) {
 class TestExecutor {
     static execute(metamorphicTest) {
         displayExecution(metamorphicTest.aut, metamorphicTest.mrs);
-        Promise.all(metamorphicTest.execute())
+        return Promise.all(metamorphicTest.execute())
             .then(result => {
-                result.summary = calculateSummary(result);
-                displayReport(result) 
+                result.summary = getTestSummary(result);
+                return result;
             })
             .catch(err => {
                 console.log(err);
             });
     }
 
-    static executeAll(metamorphicTests) {
+    static async displayTestReport(report) {
+        try {
+            displayReport(await report);
+            // displaySummary()
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
+    static executeAll(metamorphicTests) {
+        const report = metamorphicTests.map(test => {
+            return Promise.all(test.execute())
+                .then(result => {
+                    result.summary = getTestSummary(result);
+                    return result;
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        });
     }
 }
 

@@ -60,4 +60,4 @@ test.addRelation('Ascending value in (4n-1)Pi/2 to (4n+1)Pi/2 interval.',
         return outputs[0] < outputs[1];
     }, 3);
 
-test.execute();
+module.exports = test;

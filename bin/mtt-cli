@@ -17,10 +17,13 @@ const argv = require('yargs')
 
 const fs = require('fs');
 const path = require('path');
+const TestExecutor = require('../src/core/TestExecutor.js');
 
 if (argv.f) {
     const filepath = path.join(process.cwd(), argv.f);
-    require(filepath);
+    const testReport = require(filepath).execute();
+    TestExecutor.displayTestReport(testReport);
+    
 } else {
     const filepaths = fs.readdirSync(argv.d).map(file => {
         return path.join(process.cwd(), argv.d, file);
