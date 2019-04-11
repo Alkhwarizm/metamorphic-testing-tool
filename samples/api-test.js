@@ -81,7 +81,7 @@ test.addRelation('Union of the following outputs should equal the source output'
         }
         return [source, following1, following2];
     }, (outputs) => {
-        return outputs[0].sort(comparator).join('') === outputs[1].concat(outputs[2]).sort(comparator).join('');
+        return helper.isComplete(outputs);
     })
 
 module.exports = test;
