@@ -48,7 +48,7 @@ test.addRelation('Should return the same items even when sorted.',
         }
         return [source, following]
     }, (outputs) => {
-        return outputs[0].sort(comparator).join('') === outputs[1].sort(comparator).join('');
+        return helper.isEquivalent(outputs);
     });
 
 test.addRelation('Should return exactly different items', 

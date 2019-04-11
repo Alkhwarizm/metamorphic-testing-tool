@@ -1,16 +1,12 @@
-const {
-    getRandomFloat,
-    getRandomInt,
-    getRandomProbability
-} = require('./random-number-generator');
+const rng = require('./random-number-generator');
+const patterns = require('./metamorphic-relation-patterns');
 
 function chooseRandomElement(array) {
-    return array[getRandomInt(0, array.length)];
+    return array[rng.getRandomInt(0, array.length)];
 }
 
 module.exports = {
-    getRandomFloat,
-    getRandomInt,
-    getRandomProbability,
+    ...patterns,
+    ...rng,
     chooseRandomElement,
 }
