@@ -63,9 +63,7 @@ test.addRelation('Should return exactly different items',
         }
         return [source, following]
     }, (outputs) => {
-        if (outputs[0].length === 0) throw new Error('empty source output');
-        if (outputs[1].length === 0) throw new Error('empty following output');
-        return outputs[0].every(el => !outputs[1].includes(el));
+        return helper.isDisjoint(outputs);
     });
 
 test.addRelation('Union of the following outputs should equal the source output',

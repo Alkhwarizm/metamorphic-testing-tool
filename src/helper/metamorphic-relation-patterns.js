@@ -13,7 +13,7 @@ function isSubset(outputs) {
 }
 
 function isDisjoint(outputs) {
-    return true;
+    return _(outputs[0]).intersectionWith(outputs[1], _.isEqual).isEmpty();
 }
 
 function isComplete(outputs) {
