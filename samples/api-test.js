@@ -8,8 +8,8 @@ const ACCESS_TOKEN = 'Bearer d6147d8858b12f4a60c1ebc4e4aaff4aea6c465a88e0d5fe29d
 const parameters = {
     'page[limit]': 10,
     'page[offset]': 0,
-    'sort': null,
-    'filter[nsfw]': null,
+    'sort': undefined,
+    'filter[nsfw]': undefined,
 }
 
 test.defineAPI(TEST_URI, 'GET', parameters);
@@ -23,7 +23,8 @@ test.setWrapper((input) => {
             'Content-Type': 'application/vnd.api+json',
             'Authorization': ACCESS_TOKEN,
         },
-        json: true
+        json: true,
+        timeout: 5000
     }
     // it return request-promise options object
 });
@@ -113,6 +114,15 @@ test.addRelation('Full query and filtered query should only differ in the filter
         return [source, following1, following2]
     }, (outputs) => {
         return helper.isDifferent([outputs[0], outputs[1]], outputs[2]);
+    });
+
+test.addRelation('Empty input should yield equal result from default input',
+    (parameters) => {
+        const source = {};
+        const following = Object.assign({}, parameters);
+        return [source, following];
+    }, (outputs) => {
+        return helper.isEqual(outputs);
     });
 
 module.exports = test;
