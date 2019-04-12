@@ -82,6 +82,20 @@ test.addRelation('Union of the following outputs should equal the source output'
         return [source, following1, following2];
     }, (outputs) => {
         return helper.isComplete(outputs);
-    })
+    });
+
+test.addRelation('Page limited search should be the subset of all result.', 
+    (parameters) => {
+        const source = {
+            'page[limit]': 300
+        }
+        const following = {
+            'page[limit]': 10,
+            'page[offset]': helper.getRandomInt(0, 200),
+        }
+        return [source, following]
+    }, (outputs) => {
+        return helper.isSubset(outputs);
+    }, 2);
 
 module.exports = test;
