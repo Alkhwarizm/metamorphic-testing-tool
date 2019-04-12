@@ -32,6 +32,9 @@ function isComplete(outputs) {
 }
 
 function isDifferent(outputs, expectedDiff) {
+    if (!expectedDiff) {
+        expectedDiff = outputs.pop();
+    }
     const source = outputs[0]
     return _.drop(outputs).every(foll => {
         const actualDiff = _.differenceWith(foll, source, _.isEqual);

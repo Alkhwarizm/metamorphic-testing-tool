@@ -113,7 +113,7 @@ test.addRelation('Full query and filtered query should only differ in the filter
         }
         return [source, following1, following2]
     }, (outputs) => {
-        return helper.isDifferent([outputs[0], outputs[1]], outputs[2]);
+        return helper.isDifferent(outputs);
     });
 
 test.addRelation('Empty input should yield equal result from default input',
