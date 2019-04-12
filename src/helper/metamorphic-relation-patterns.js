@@ -31,8 +31,13 @@ function isComplete(outputs) {
     return _(outputs[0]).differenceWith(union, _.isEqual).isEmpty();
 }
 
-function isDifferent(outputs, difference) {
-    return true;
+function isDifferent(outputs, expectedDiff) {
+    const source = outputs[0]
+    return _.drop(outputs).every(foll => {
+        const actualDiff = _.differenceWith(foll, source, _.isEqual);
+        return actualDiff.length === expectedDiff.length 
+            && _(actualDiff).differenceWith(expectedDiff, _.isEqual).isEmpty();
+    });
 }
 
 module.exports = {
