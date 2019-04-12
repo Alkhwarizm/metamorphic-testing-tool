@@ -32,11 +32,13 @@ function isComplete(outputs) {
 }
 
 function isDifferent(outputs, expectedDiff) {
-    if (!expectedDiff) {
-        expectedDiff = outputs.pop();
-    }
     const source = outputs[0]
-    return _.drop(outputs).every(foll => {
+    let folls = _.drop(outputs);
+    if (!expectedDiff) {
+        expectedDiff = _.last(outputs);
+        folls = _.dropRight(folls);
+    }
+    return folls.every(foll => {
         const actualDiff = _.differenceWith(foll, source, _.isEqual);
         return actualDiff.length === expectedDiff.length 
             && _(actualDiff).differenceWith(expectedDiff, _.isEqual).isEmpty();
