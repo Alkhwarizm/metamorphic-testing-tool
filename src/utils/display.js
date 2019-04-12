@@ -76,29 +76,46 @@ function showAllResults(results) {
 
 function showMetamorphicRelation(result) {
     const color = result.meta.result ? 'green' : 'red'
-    log(chalk`{bold.${color}.inverse ${result.relation.description}}`);
-    log(chalk`{${color} Passed Test Case(s): ${result.meta.passed}/${result.meta.total}}`);
-    result.testCases.forEach(testcase => showTestCase(testcase));
+    log();
+    log(chalk`{bold.${color}.inverse ${result.relation.description}}`, 
+        chalk`{${color} Passed Test Case(s): ${result.meta.passed}/${result.meta.total}}`);
+    result.testCases.forEach((testcase, idx) => showTestCase(testcase, idx+1));
 }
 
-function showTestCase(testcase) {
+function showTestCase(testcase, testIdx) {
+    const ui = createUI();
+    const columnSetting = [
+        { width: 8, padding: [0, 1, 0, 0], },
+        {}, {}, { width: 6 } 
+    ]
     if (testcase.error) {
-        log(chalk`{red.inverse Error:} {redBright ${testcase.error}}`);
+        ui.div(
+            { text: chalk`{red ${idx}}`, ...columnSetting[0]},
+            { text: chalk`{red.inverse Error:} {redBright ${testcase.error}}`, ...columnSetting[1] }
+        );
     } else {
         const color = testcase.result ? 'green' : 'red';
         const textResult = testcase.result ? 'Passed' : 'Failed';
+        const row = [];
 
-        log(chalk`{bold.${color} -- ${textResult}}`);
+        ui.div(
+            { text: chalk`{${color}.underline TC ${testIdx}}`, ...columnSetting[0]},
+            { text: chalk`{${color}.underline Input}`, ...columnSetting[1]},
+            { text: chalk`{${color}.underline Output}`, ...columnSetting[2]},
+            { text: chalk`{${color}.bold ${textResult}}`, ...columnSetting[3]}
+        );
         testcase.inputs.forEach((input, idx) => {
             const textInput = JSON.stringify(input);
             const textOutput = testcase.outputs[idx];
-            if (idx === 0) {
-                log(chalk`{${color} ---- source: ${textInput} -> ${textOutput}}`);
-            } else {
-                log(chalk`{${color} ---- foll_${idx}: ${textInput} -> ${textOutput}}`);
-            }
+            ui.div(
+                { text: chalk`{${color} ${idx === 0 ? 'source' : 'foll_'+idx}}`, ...columnSetting[0]},
+                { text: chalk`{${color} ${textInput}}`, ...columnSetting[1]},
+                { text: chalk`{${color} ${textOutput}}`, ...columnSetting[2]},
+                { text: chalk`{${color} }`, ...columnSetting[3]}
+            );
         })
     }
+    log(ui.toString());
 }
 
 function displayReport(results) {
