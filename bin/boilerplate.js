@@ -10,26 +10,24 @@ test.defineAPI(
 );
 
 // set wrapper function to wrap input into request
-test.setWrapper(input =>
 // return request-promise options object
-  ({
-    qs: {
-      q: input.q,
-      hl: 'en', // to set the page to english
-    },
-  }));
+test.setWrapper(input => ({
+  qs: {
+    q: input.q,
+    hl: 'en', // to set the page to english
+  },
+}));
 
 // set extractor function to extract output from resp
-test.setExtractor(resp =>
 // return a thenable promise
-  resp.then((htmlString) => {
-    const regex = /About ([0-9,]*) results/;
-    return Number.parseInt(htmlString.match(regex)[1].replace(/,/g, ''));
-  }));
+test.setExtractor(resp => resp.then((htmlString) => {
+  const regex = /About ([0-9,]*) results/;
+  return Number.parseInt(htmlString.match(regex)[1].replace(/,/g, ''), 10);
+}));
 
 // add metamorphic relation
 test.addRelation('Less result for more specific search query', // human readable metamorphic description
-  (parameters) => {
+  (parameters) => { // eslint-disable-line no-unused-vars
     // transformation function that define inputs
     const words = ['metamorphic', 'testing', 'restful', 'api'];
     const source = {
@@ -39,9 +37,7 @@ test.addRelation('Less result for more specific search query', // human readable
       q: `${source.q} ${helper.chooseRandomElement(words)}`,
     }; // following input or i1 and onward
     return [source, following];
-  }, outputs =>
-  // relation function that define how outputs are compared
-    outputs[0] > outputs[1],
+  }, outputs => outputs[0] > outputs[1], // relation function that define how outputs are compared
   2);
 
 module.exports = test;

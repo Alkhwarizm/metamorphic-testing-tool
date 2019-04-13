@@ -34,7 +34,7 @@ class MetamorphicTesting {
       const params = this.parameters;
 
       const results = [];
-      for (let i = 0; i < relation.testCaseCount; i++) {
+      for (let i = 0; i < relation.testCaseCount; i += 1) {
         // create test cases
         const inputs = relation.transform(params);
 
@@ -48,9 +48,9 @@ class MetamorphicTesting {
 
         // extract outputs from request
         const outputs = Promise.all(resps.map(resp => this.aut.extract(resp)))
-          .then((outputs) => {
-            const report = { inputs, outputs };
-            report.result = relation.assert(outputs);
+          .then((output) => {
+            const report = { inputs, outputs: output };
+            report.result = relation.assert(output);
             return report;
           })
           .catch(err => ({ error: err.statusCode || err || 'unknown error' }));
@@ -58,7 +58,7 @@ class MetamorphicTesting {
         results.push(outputs);
       }
 
-      const report = new Promise((resolve, reject) => {
+      const report = new Promise((resolve) => {
         Promise.all(results)
           .then((testResult) => {
             const meta = {

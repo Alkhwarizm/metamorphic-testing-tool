@@ -2,7 +2,8 @@ const _ = require('lodash');
 
 function isEquivalent(outputs) {
   const source = outputs[0];
-  return _.drop(outputs).every(foll => source.length === foll.length && _(source).differenceWith(foll, _.isEqual).isEmpty());
+  return _.drop(outputs).every(foll => source.length === foll.length
+    && _(source).differenceWith(foll, _.isEqual).isEmpty());
 }
 
 function isEqual(outputs) {
@@ -16,7 +17,10 @@ function isSubset(outputs) {
 }
 
 function isDisjoint(outputs) {
-  const result = _.drop(outputs).every(foll => _(outputs[0]).intersectionWith(foll, _.isEqual).isEmpty());
+  const result = _.drop(outputs)
+    .every(foll => _(outputs[0])
+      .intersectionWith(foll, _.isEqual)
+      .isEmpty());
   return result;
 }
 
