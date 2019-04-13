@@ -4,7 +4,9 @@
   "description": "Metamorphic testing tool prototype for RESTful Web API",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/.bin/eslint ./src/ ./bin/ index.js",
+    "lintfix": "./node_modules/.bin/eslint --fix ./src/ ./bin/ index.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +17,10 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "yargs": "^13.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0"
   }
 }

@@ -33,47 +33,45 @@ class MetamorphicTesting {
     this.mrs.forEach((relation) => {
       const params = this.parameters;
 
-      const results = []
+      const results = [];
       for (let i = 0; i < relation.testCaseCount; i++) {
         // create test cases
         const inputs = relation.transform(params);
-        
-         // wrap inputs into requests
-        const reqs = inputs.map((input) => this.aut.wrap(input));
+
+        // wrap inputs into requests
+        const reqs = inputs.map(input => this.aut.wrap(input));
         // send request and receive response
         const resps = reqs.map((req) => {
           req.method = this.method;
           return send(this.uri, req);
-        }); 
+        });
 
         // extract outputs from request
-        const outputs = Promise.all(resps.map((resp) => this.aut.extract(resp)))
-          .then(outputs => {
-            const report = {inputs, outputs}
+        const outputs = Promise.all(resps.map(resp => this.aut.extract(resp)))
+          .then((outputs) => {
+            const report = { inputs, outputs };
             report.result = relation.assert(outputs);
             return report;
           })
-          .catch(err => {
-            return { error: err.statusCode || err || 'unknown error' };
-          });
-        
+          .catch(err => ({ error: err.statusCode || err || 'unknown error' }));
+
         results.push(outputs);
       }
-      
+
       const report = new Promise((resolve, reject) => {
         Promise.all(results)
-          .then(testResult => {
+          .then((testResult) => {
             const meta = {
               total: testResult.length,
               passed: testResult.filter(tc => tc.result).length,
-              failed: testResult.filter(tc => !tc.result).length
-            }
+              failed: testResult.filter(tc => !tc.result).length,
+            };
             meta.result = meta.total === meta.passed;
-            resolve({ meta, relation, testCases: testResult })
+            resolve({ meta, relation, testCases: testResult });
           });
-      })
+      });
       reports.push(report);
-    })
+    });
 
     return reports;
   }
