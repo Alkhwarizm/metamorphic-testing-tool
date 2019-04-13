@@ -29,9 +29,10 @@ function isComplete(outputs) {
   return _(outputs[0]).differenceWith(union, _.isEqual).isEmpty();
 }
 
-function isDifferent(outputs, expectedDiff) {
+function isDifferent(outputs, difference) {
   const source = outputs[0];
   let folls = _.drop(outputs);
+  let expectedDiff = difference;
   if (!expectedDiff) {
     expectedDiff = _.last(outputs);
     folls = _.dropRight(folls);

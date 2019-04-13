@@ -4,8 +4,8 @@ const MetamorphicRelation = require('../core/MetamorphicRelation.js');
 const TestExecutor = require('../core/TestExecutor.js');
 const helpers = require('../helper/helpers.js');
 
-function defaultWrapper(parameters, helper) { return {}; }
-function defaultExtractor(resp, pattern) { return Promise.resolve(''); }
+function defaultWrapper() { return {}; }
+function defaultExtractor() { return Promise.resolve(''); }
 
 class TestInterface {
   constructor(
