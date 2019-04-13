@@ -9,7 +9,7 @@ function showTitle() {
 
 function createTestSummaryRows(testResult, columnSetting) {
   const summaryRows = [];
-  testResult.relations.forEach((row, idx) => {
+  testResult.relations.forEach((row) => {
     const percentage = Number.parseFloat(row.passed / row.testCases * 100).toFixed(2);
     const color = row.failed ? 'red' : 'green';
     summaryRows.push([
@@ -60,7 +60,8 @@ function createExecutionSummaryTable(executionSummary) {
     { text: chalk`{${footerColor} ${border.repeat(columnSetting[3].width - 1)}}`, ...columnSetting[3] },
     { text: chalk`{${footerColor} ${border.repeat(columnSetting[4].width - 1)}}`, ...columnSetting[4] },
   );
-  const percentage = Number.parseFloat(overview.passedTestCases / overview.totalTestCases * 100).toFixed(2);
+  const ratio = overview.passedTestCases / overview.totalTestCases;
+  const percentage = Number.parseFloat(ratio * 100).toFixed(2);
   ui.div(
     { text: chalk`{${sumColor} ${overview.totalTests}}`, ...columnSetting[0] },
     { text: chalk`{${sumColor} }`, ...columnSetting[1] },
@@ -71,18 +72,6 @@ function createExecutionSummaryTable(executionSummary) {
   return ui.toString();
 }
 
-function showAllResults(results) {
-  results.forEach(result => showMetamorphicRelation(result));
-}
-
-function showMetamorphicRelation(result) {
-  const color = result.meta.result ? 'green' : 'red';
-  log();
-  log(chalk`{bold.${color}.inverse ${result.relation.description}}`,
-    chalk`{${color} Passed Test Case(s): ${result.meta.passed}/${result.meta.total}}`);
-  result.testCases.forEach((testcase, idx) => showTestCase(testcase, idx + 1));
-}
-
 function showTestCase(testcase, testIdx) {
   const ui = createUI();
   const columnSetting = [
@@ -91,13 +80,12 @@ function showTestCase(testcase, testIdx) {
   ];
   if (testcase.error) {
     ui.div(
-      { text: chalk`{red ${idx}}`, ...columnSetting[0] },
+      { text: chalk`{red ${testIdx}}`, ...columnSetting[0] },
       { text: chalk`{red.inverse Error:} {redBright ${testcase.error}}`, ...columnSetting[1] },
     );
   } else {
     const color = testcase.result ? 'green' : 'red';
     const textResult = testcase.result ? 'Passed' : 'Failed';
-    const row = [];
 
     ui.div(
       { text: chalk`{${color}.underline TC ${testIdx}}`, ...columnSetting[0] },
@@ -117,6 +105,18 @@ function showTestCase(testcase, testIdx) {
     });
   }
   log(ui.toString());
+}
+
+function showMetamorphicRelation(result) {
+  const color = result.meta.result ? 'green' : 'red';
+  log();
+  log(chalk`{bold.${color}.inverse ${result.relation.description}}`,
+    chalk`{${color} Passed Test Case(s): ${result.meta.passed}/${result.meta.total}}`);
+  result.testCases.forEach((testcase, idx) => showTestCase(testcase, idx + 1));
+}
+
+function showAllResults(results) {
+  results.forEach(result => showMetamorphicRelation(result));
 }
 
 function displayReport(results) {
