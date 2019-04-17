@@ -2,7 +2,7 @@ const {
   displayExecution,
   displayReport,
   displaySummary,
-} = require('../utils/display.js');
+} = require('../plugins/display.js');
 
 function getExecutionSummary(results) {
   const details = results.map((result, idx) => ({

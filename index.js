@@ -1,1 +1,1 @@
-module.exports = require('./src/utils/syntax.js');
+module.exports = require('./src/plugins/syntax.js');
