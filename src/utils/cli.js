@@ -39,6 +39,22 @@ yargs
         },
         initTest
     )
+    .command(
+        'sample',
+        'Generate an executable sample of metamorphic test file in the directory',
+        function (yargs) {
+            return yargs.options({
+                'd': {
+                    alias: 'directory',
+                    default: 'tests',
+                    describe: 'specifies metamorphic test directory to be run',
+                    requiresArg: true,
+                    nargs: 1
+                }
+            })
+        },
+        generateSample
+    )
     .example('$0 run -d tests', 'Run all metamorphic tests in /tests directory.')
     .example('$0 run -f test.js', 'Run a metamorphic tests defined in test.js.')
     .demandCommand(1)
@@ -73,4 +89,8 @@ function copyTemplate(template, target) {
 
 function initTest(argv) {
     copyTemplate('boilerplate.js', argv.path);
+}
+
+function generateSample(argv) {
+    copyTemplate('sample.js', path.join(argv.d, 'mt-sample.js'));
 }
