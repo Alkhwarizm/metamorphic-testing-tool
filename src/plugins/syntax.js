@@ -2,7 +2,7 @@ const MetamorphicTesting = require('../core/MetamorphicTesting.js');
 const APIUnderTest = require('../core/APIUnderTest.js');
 const MetamorphicRelation = require('../core/MetamorphicRelation.js');
 const TestExecutor = require('../core/TestExecutor.js');
-const helpers = require('../helper/helpers.js');
+const helpers = require('../plugins/helper/helpers.js');
 
 function defaultWrapper() { return {}; }
 function defaultExtractor() { return Promise.resolve(''); }
