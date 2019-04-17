@@ -1,3 +1,13 @@
 {
-    "extends": "airbnb-base"
+    "extends": "airbnb-base",
+    "overrides": [
+        {
+            "files": ["src/**/cli.js"],
+            "rules": {
+                "global-require": "off",
+                "import/no-dynamic-require": "off",
+                "no-unused-expressions": "off"
+            }
+        }
+    ]
 }
