@@ -3,7 +3,7 @@ const {
   displayReport,
   displaySummary,
 } = require('../plugins/display.js');
-const { TestResults } = require('./TestReport.js');
+const { TestResults, TestReport } = require('./TestReport.js');
 
 function getExecutionSummary(results) {
   const details = results.map((result, idx) => ({
@@ -75,21 +75,22 @@ class TestExecutor {
   }
 
   static executeAll(metamorphicTests) {
-    const reports = metamorphicTests.map(test => Promise.all(test.execute())
+    const testReport = new TestReport();
+    const results = metamorphicTests.map(test => Promise.all(test.execute())
       .then((result) => {
         return new TestResults(result, test.aut);
       })
       .catch((err) => {
         console.log(err);
       }));
-    return reports;
+    testReport.submitResults(results)
+    return testReport;
   }
 
-  static async displayAllTestReport(reports) {
+  static async displayAllTestReport(report) {
     try {
-      reports.forEach(async report => displayReport((await report).records));
-      const executionReports = await Promise.all(reports);
-      displaySummary(getExecutionSummary(executionReports));
+      report.results.forEach(async result => displayReport((await result).records));
+      displaySummary(await report.summary);
     } catch (err) {
       console.log(err);
     }

@@ -44,7 +44,52 @@ class TestResults {
     }
 }
 
+class TestReport {
+    constructor() {
+        this.createDate = Date.now();
+        this.results = [];
+        this.summary = {};
+        this.submitDate = undefined;
+    }
+
+    get executionTime() {
+        const millis = this.submitDate - this.createDate
+        return Math.floor(millis/1000);
+    }
+
+    submitResults(results) {
+        this.submitDate = Date.now();
+        this.results = results;
+        this.summary = this.calculateSummary();
+    }
+
+    async calculateSummary() {
+        const results = await Promise.all(this.results);
+        const details = results.map((result, idx) => ({
+            test: {
+              idx: idx + 1,
+              target: result.target,
+            },
+            relations: result.summary.details,
+            overview: result.summary.overview,
+          }));
+          const overview = {
+            totalTests: details.length,
+            totalRelations: details.reduce((acc, curr) => acc + curr.overview.totalRelations, 0),
+            totalTestCases: details.reduce((acc, curr) => acc + curr.overview.totalTestCases, 0),
+            failedTests: details.filter(t => t.overview.failedRelations).length,
+            failedRelations: details.reduce((acc, curr) => acc + curr.overview.failedRelations, 0),
+            failedTestCases: details.reduce((acc, curr) => acc + curr.overview.failedTestCases, 0),
+            passedTests: details.filter(t => !t.overview.failedRelations).length,
+            passedRelations: details.reduce((acc, curr) => acc + curr.overview.passedRelations, 0),
+            passedTestCases: details.reduce((acc, curr) => acc + curr.overview.passedTestCases, 0),
+          };
+          return { details, overview };
+    }
+}
+
 module.exports = {
     TestRecord,
-    TestResults
+    TestResults,
+    TestReport
 }
