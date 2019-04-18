@@ -3,6 +3,7 @@ const {
   displayReport,
   displaySummary,
 } = require('../plugins/display.js');
+const { TestResults } = require('./TestReport.js');
 
 function getExecutionSummary(results) {
   const details = results.map((result, idx) => ({
@@ -56,9 +57,7 @@ class TestExecutor {
     displayExecution(metamorphicTest.aut, metamorphicTest.mrs);
     return Promise.all(metamorphicTest.execute())
       .then((result) => {
-        result.target = metamorphicTest.aut;
-        result.summary = getTestSummary(result);
-        return result;
+        return new TestResults(result, metamorphicTest.aut);
       })
       .catch((err) => {
         console.log(err);
@@ -68,7 +67,7 @@ class TestExecutor {
   static async displayTestReport(report) {
     try {
       const executionReport = await report;
-      displayReport(executionReport);
+      displayReport(executionReport.records);
       displaySummary(getExecutionSummary([executionReport]));
     } catch (err) {
       console.log(err);
@@ -78,9 +77,7 @@ class TestExecutor {
   static executeAll(metamorphicTests) {
     const reports = metamorphicTests.map(test => Promise.all(test.execute())
       .then((result) => {
-        result.target = test.aut;
-        result.summary = getTestSummary(result);
-        return result;
+        return new TestResults(result, test.aut);
       })
       .catch((err) => {
         console.log(err);
@@ -90,7 +87,7 @@ class TestExecutor {
 
   static async displayAllTestReport(reports) {
     try {
-      reports.forEach(async report => displayReport(await report));
+      reports.forEach(async report => displayReport((await report).records));
       const executionReports = await Promise.all(reports);
       displaySummary(getExecutionSummary(executionReports));
     } catch (err) {

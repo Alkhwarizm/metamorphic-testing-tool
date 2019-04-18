@@ -1,4 +1,5 @@
 const send = require('request-promise');
+const { TestRecord } = require('./TestReport.js');
 
 class MetamorphicTesting {
   constructor(aut, mrs = []) {
@@ -61,13 +62,7 @@ class MetamorphicTesting {
       const report = new Promise((resolve) => {
         Promise.all(results)
           .then((testResult) => {
-            const meta = {
-              total: testResult.length,
-              passed: testResult.filter(tc => tc.result).length,
-              failed: testResult.filter(tc => !tc.result).length,
-            };
-            meta.result = meta.total === meta.passed;
-            resolve({ meta, relation, testCases: testResult });
+            resolve(new TestRecord(testResult, relation));
           });
       });
       reports.push(report);
