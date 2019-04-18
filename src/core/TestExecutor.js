@@ -30,9 +30,11 @@ class TestExecutor {
     return testReport;
   }
 
-  static async displayTestReport(report) {
+  static async displayTestReport(report, verboseLevel = 0) {
     try {
-      report.results.forEach(async result => displayResult(await result));
+      if (verboseLevel === 1) {
+        report.results.forEach(async result => displayResult(await result));
+      }
       displaySummary(await report.summary);
     } catch (err) {
       console.log(err);

@@ -4,16 +4,17 @@ const yargs = require('yargs');
 const TestExecutor = require('../core/TestExecutor');
 
 function runTest(argv) {
+  const verboseLevel = argv.v ? 1 : 0;
   if (argv.f) {
     const filepath = path.join(process.cwd(), argv.f);
     const testReport = TestExecutor.execute(require(filepath).test);
-    TestExecutor.displayTestReport(testReport);
+    TestExecutor.displayTestReport(testReport, verboseLevel);
   } else {
     const filepaths = fs.readdirSync(argv.d).map(file => path.join(process.cwd(), argv.d, file));
 
     const tests = filepaths.map(file => require(file).test).reverse();
     const testReports = TestExecutor.executeAll(tests);
-    TestExecutor.displayTestReport(testReports);
+    TestExecutor.displayTestReport(testReports, verboseLevel);
   }
 }
 
@@ -51,6 +52,11 @@ yargs
         describe: 'specifies metamorphic test file to be run',
         requiresArg: true,
       },
+      v: {
+        alias: 'verbose',
+        describe: 'set display to verbose mode',
+        boolean: true,
+      }
     }),
     runTest,
   )
