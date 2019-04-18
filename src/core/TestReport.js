@@ -52,13 +52,13 @@ class TestReport {
         this.submitDate = undefined;
     }
 
-    get executionTime() {
-        const millis = this.submitDate - this.createDate
+    async getExecutionTime() {
+        const millis = await this.finishDate - this.createDate
         return Math.floor(millis/1000);
     }
 
     submitResults(results) {
-        this.submitDate = Date.now();
+        this.finishDate = Promise.all(results).then(() => Date.now());
         this.results = results;
         this.summary = this.calculateSummary();
     }
