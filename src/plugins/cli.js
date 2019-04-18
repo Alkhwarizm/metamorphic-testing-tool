@@ -7,13 +7,13 @@ function runTest(argv) {
   if (argv.f) {
     const filepath = path.join(process.cwd(), argv.f);
     const testReport = TestExecutor.execute(require(filepath).test);
-    TestExecutor.displayAllTestReport(testReport);
+    TestExecutor.displayTestReport(testReport);
   } else {
     const filepaths = fs.readdirSync(argv.d).map(file => path.join(process.cwd(), argv.d, file));
 
     const tests = filepaths.map(file => require(file).test).reverse();
     const testReports = TestExecutor.executeAll(tests);
-    TestExecutor.displayAllTestReport(testReports);
+    TestExecutor.displayTestReport(testReports);
   }
 }
 
