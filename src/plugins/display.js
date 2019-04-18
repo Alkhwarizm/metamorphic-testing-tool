@@ -3,8 +3,9 @@ const createUI = require('cliui');
 
 const { log } = console;
 
-function showTitle() {
-  log(chalk``);
+function showTitle(targetAPI) {
+  const uriColor = 'white';
+  log(chalk`{yellow.inverse.bold Operation:} {${uriColor} ${targetAPI.httpMethod} ${targetAPI.uri}}`);
 }
 
 function createTestSummaryRows(testResult, columnSetting) {
@@ -109,19 +110,19 @@ function showTestCase(testcase, testIdx) {
 
 function showMetamorphicRelation(result) {
   const color = result.meta.result ? 'green' : 'red';
-  log();
   log(chalk`{bold.${color}.inverse ${result.relation.description}}`,
     chalk`{${color} Passed Test Case(s): ${result.meta.passed}/${result.meta.total}}`);
   result.testCases.forEach((testcase, idx) => showTestCase(testcase, idx + 1));
+  log();
 }
 
 function showAllResults(results) {
   results.forEach(result => showMetamorphicRelation(result));
 }
 
-function displayReport(results) {
-  showTitle();
-  showAllResults(results);
+function displayResult(result) {
+  showTitle(result.target);
+  showAllResults(result.records);
 }
 
 function displayExecution(tests) {
@@ -157,7 +158,7 @@ function displaySummary(executionSummary) {
 }
 
 module.exports = {
-  displayReport,
   displayExecution,
   displaySummary,
+  displayResult,
 };

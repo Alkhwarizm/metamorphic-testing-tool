@@ -1,7 +1,7 @@
 const {
   displayExecution,
-  displayReport,
   displaySummary,
+  displayResult,
 } = require('../plugins/display.js');
 const { TestResults, TestReport } = require('./TestReport.js');
 
@@ -32,7 +32,7 @@ class TestExecutor {
 
   static async displayTestReport(report) {
     try {
-      report.results.forEach(async result => displayReport((await result).records));
+      report.results.forEach(async result => displayResult(await result));
       displaySummary(await report.summary);
     } catch (err) {
       console.log(err);
