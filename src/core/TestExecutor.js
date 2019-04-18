@@ -7,7 +7,7 @@ const { TestResults, TestReport } = require('./TestReport.js');
 
 class TestExecutor {
   static execute(metamorphicTest) {
-    displayExecution(metamorphicTest.aut, metamorphicTest.mrs);
+    displayExecution([metamorphicTest]);
     const testReport = new TestReport();
     const testResult = Promise.all(metamorphicTest.execute())
       .then(result => new TestResults(result, metamorphicTest.aut))
@@ -19,6 +19,7 @@ class TestExecutor {
   }
 
   static executeAll(metamorphicTests) {
+    displayExecution(metamorphicTests);
     const testReport = new TestReport();
     const testResults = metamorphicTests.map(test => Promise.all(test.execute())
       .then(result => new TestResults(result, test.aut))

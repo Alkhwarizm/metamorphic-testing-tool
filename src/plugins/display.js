@@ -124,14 +124,32 @@ function displayReport(results) {
   showAllResults(results);
 }
 
-function displayExecution(address, mrs) {
-  const relationCount = mrs.length;
-  const testCaseCount = mrs.reduce((acc, curr) => acc + curr.testCaseCount, 0);
-  log(chalk`
-        {yellow.bold.inverse TEST EXECUTION}
-        {yellow Operation: }{white ${address.httpMethod} ${address.uri}}
-        {yellow Executing ${testCaseCount} test cases from ${relationCount} relations...}
-    `);
+function displayExecution(tests) {
+  const ui = createUI();
+  const mainColor = 'yellow';
+  const uriColor = 'white';
+  ui.div({ text: chalk`{${mainColor}.bold.inverse METAMORPHIC TEST EXECUTION}`})
+
+  let totalTC = 0;
+  let totalRel = 0;
+  tests.forEach((test, idx) => {
+    const relCount = test.mrs.length;
+    const tcCount = test.mrs.reduce((acc, curr) => acc + curr.testCaseCount, 0);
+    ui.div(
+      { text: chalk`{${mainColor} ${idx+1}}`, width: 4, align: 'right', padding: [0, 1, 0, 0] },
+      { text: chalk`{${uriColor} ${test.aut.httpMethod} ${test.aut.uri}}` },
+      { text: chalk`{${mainColor} ${relCount} relations}`, width: 16, align: 'right' },
+      { text: chalk`{${mainColor} ${tcCount} test cases}`, width: 16, align: 'right' }
+    )
+    totalRel += relCount;
+    totalTC += tcCount;
+  })
+
+  ui.div({ 
+    text: chalk`{${mainColor} Executing ${totalTC} test cases from ${totalRel} relations in ${tests.length} tests...}`,
+    padding: [1, 0, 0, 0]
+  })
+  log(ui.toString());
 }
 
 function displaySummary(executionSummary) {
