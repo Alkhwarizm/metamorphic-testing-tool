@@ -7,7 +7,7 @@ function runTest(argv) {
   if (argv.f) {
     const filepath = path.join(process.cwd(), argv.f);
     const testReport = TestExecutor.execute(require(filepath).test);
-    TestExecutor.displayTestReport(testReport);
+    TestExecutor.displayAllTestReport(testReport);
   } else {
     const filepaths = fs.readdirSync(argv.d).map(file => path.join(process.cwd(), argv.d, file));
 

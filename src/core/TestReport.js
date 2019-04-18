@@ -54,7 +54,7 @@ class TestReport {
 
     async getExecutionTime() {
         const millis = await this.finishDate - this.createDate
-        return Math.floor(millis/1000);
+        return millis;
     }
 
     submitResults(results) {

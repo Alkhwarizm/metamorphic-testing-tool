@@ -55,23 +55,16 @@ function getTestSummary(result) {
 class TestExecutor {
   static execute(metamorphicTest) {
     displayExecution(metamorphicTest.aut, metamorphicTest.mrs);
-    return Promise.all(metamorphicTest.execute())
+    const testReport = new TestReport();
+    const result = Promise.all(metamorphicTest.execute())
       .then((result) => {
         return new TestResults(result, metamorphicTest.aut);
       })
       .catch((err) => {
         console.log(err);
       });
-  }
-
-  static async displayTestReport(report) {
-    try {
-      const executionReport = await report;
-      displayReport(executionReport.records);
-      displaySummary(getExecutionSummary([executionReport]));
-    } catch (err) {
-      console.log(err);
-    }
+    testReport.submitResults([result]);
+    return testReport;
   }
 
   static executeAll(metamorphicTests) {
