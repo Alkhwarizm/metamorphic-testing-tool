@@ -5,16 +5,20 @@ const TestExecutor = require('../core/TestExecutor');
 
 function runTest(argv) {
   const verboseLevel = argv.v ? 1 : 0;
-  if (argv.f) {
-    const filepath = path.join(process.cwd(), argv.f);
-    const testReport = TestExecutor.execute(require(filepath).test);
-    TestExecutor.displayTestReport(testReport, verboseLevel);
+  const target = argv.path;
+  if (fs.existsSync(target)) {
+    if (fs.lstatSync(target).isDirectory()) {
+      const filepaths = fs.readdirSync(target).map(file => path.join(process.cwd(), target, file));
+      const tests = filepaths.map(file => require(file).test).reverse();
+      const testReports = TestExecutor.executeAll(tests);
+      TestExecutor.displayTestReport(testReports, verboseLevel);
+    } else if (fs.lstatSync(target).isFile()) {
+      const filepath = path.join(process.cwd(), target);
+      const testReport = TestExecutor.execute(require(filepath).test);
+      TestExecutor.displayTestReport(testReport, verboseLevel);
+    }
   } else {
-    const filepaths = fs.readdirSync(argv.d).map(file => path.join(process.cwd(), argv.d, file));
-
-    const tests = filepaths.map(file => require(file).test).reverse();
-    const testReports = TestExecutor.executeAll(tests);
-    TestExecutor.displayTestReport(testReports, verboseLevel);
+    console.log("Path doesn't exist.");
   }
 }
 
@@ -37,24 +41,15 @@ function generateSample(argv) {
 yargs
   .usage('Usage: $0 <command> [options]')
   .command(
-    'run',
+    'run <path>',
     'Run metamorphic tests in the directory.',
-    yargs => yargs.options({
-      d: {
-        alias: 'directory',
-        default: 'tests',
-        describe: 'specifies metamorphic test directory to be run',
-        requiresArg: true,
-        nargs: 1,
-      },
-      f: {
-        alias: 'file',
-        describe: 'specifies metamorphic test file to be run',
-        requiresArg: true,
-      },
+    yargs => yargs.positional('path', {
+      describe: 'test path to be run; if a directory, all of the test in it will be run',
+      normalize: true,
+    }).options({
       v: {
         alias: 'verbose',
-        describe: 'set display to verbose mode',
+        describe: 'Set display to verbose mode',
         boolean: true,
       }
     }),
@@ -65,9 +60,7 @@ yargs
     'Create new metamorphic test file with boilerplate in the specified path.',
     yargs => yargs.positional('path', {
       describe: 'path into which the new test will be created',
-      requiresArg: true,
       normalize: true,
-      nargs: 1,
     }),
     initTest,
   )
