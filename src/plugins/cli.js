@@ -3,22 +3,32 @@ const path = require('path');
 const yargs = require('yargs');
 const TestExecutor = require('../core/TestExecutor');
 
+function runTestFile(target) {
+  const filepath = path.join(process.cwd(), target);
+  return TestExecutor.execute(require(filepath).test);
+}
+
+function runTestDir(target) {
+  const filepaths = fs.readdirSync(target).map(file => path.join(process.cwd(), target, file));
+  const tests = filepaths.map(file => require(file).test).reverse();
+  return TestExecutor.executeAll(tests);
+}
+
 function runTest(argv) {
   const verboseLevel = argv.v ? 1 : 0;
   const target = argv.path;
   if (fs.existsSync(target)) {
+    let testReport;
     if (fs.lstatSync(target).isDirectory()) {
-      const filepaths = fs.readdirSync(target).map(file => path.join(process.cwd(), target, file));
-      const tests = filepaths.map(file => require(file).test).reverse();
-      const testReports = TestExecutor.executeAll(tests);
-      TestExecutor.displayTestReport(testReports, verboseLevel);
+      testReport = runTestDir(target);
     } else if (fs.lstatSync(target).isFile()) {
-      const filepath = path.join(process.cwd(), target);
-      const testReport = TestExecutor.execute(require(filepath).test);
-      TestExecutor.displayTestReport(testReport, verboseLevel);
+      testReport = runTestFile(target);
+    } else {
+      throw `${target} is not a file nor a directory.`
     }
+    TestExecutor.displayTestReport(testReport, verboseLevel);
   } else {
-    console.log("Path doesn't exist.");
+    throw "Path doesn't exist.";
   }
 }
 
