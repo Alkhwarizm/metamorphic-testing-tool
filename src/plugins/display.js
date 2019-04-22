@@ -149,7 +149,8 @@ function displayExecution(tests) {
   ui.div({ 
     text: chalk`{${mainColor} Executing ${totalTC} test cases from ${totalRel} relations in ${tests.length} tests...}`,
     padding: [1, 0, 0, 0]
-  })
+  });
+  log();
   log(ui.toString());
 }
 

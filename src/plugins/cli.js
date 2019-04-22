@@ -81,15 +81,16 @@ yargs
       d: {
         alias: 'directory',
         default: 'tests',
-        describe: 'specifies metamorphic test directory to be run',
+        describe: 'specifies in which directory the sample will be created',
         requiresArg: true,
         nargs: 1,
       },
     }),
     generateSample,
   )
-  .example('$0 run -d tests', 'Run all metamorphic tests in /tests directory.')
-  .example('$0 run -f test.js', 'Run a metamorphic tests defined in test.js.')
+  .example('$0 run tests', 'Run all metamorphic tests in /tests directory.')
+  .example('$0 run test.js', 'Run a metamorphic tests defined in test.js.')
+  .example('$0 add tests/test.js', 'Create new metamorphic test in /tests as test.js.')
   .demandCommand(1)
   .help('h')
   .alias('h', 'help')
