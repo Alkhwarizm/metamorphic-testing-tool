@@ -27,6 +27,10 @@ function runTest(argv) {
       throw `${target} is not a file nor a directory.`
     }
     TestExecutor.displayTestReport(testReport, verboseLevel);
+
+    testReport.isPassed().then((val) => {
+      if (!val) process.exitCode = 1;
+    })
   } else {
     throw "Path doesn't exist.";
   }

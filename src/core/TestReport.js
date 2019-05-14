@@ -49,7 +49,11 @@ class TestReport {
     this.createDate = Date.now();
     this.results = [];
     this.summary = {};
-    this.submitDate = undefined;
+  }
+
+  async isPassed() {
+    const summary = await this.summary;
+    return summary.overview.failedTests === 0;
   }
 
   async getExecutionTime() {
