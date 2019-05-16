@@ -1,4 +1,4 @@
-const MetamorphicTest = require('../index.js');
+const MetamorphicTest = require('mt-tools-prototype');
 
 const { helper } = MetamorphicTest;
 const test = new MetamorphicTest();
