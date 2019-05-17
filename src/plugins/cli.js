@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const yargs = require('yargs');
-const logger = require('../plugins/logger');
+const createLogger = require('../plugins/logger');
 const TestExecutor = require('../core/TestExecutor');
+let logger;
 
 function runTestFile(target) {
   const filepath = path.join(process.cwd(), target);
@@ -19,6 +20,7 @@ function runTestDir(target) {
 }
 
 function runTest(argv) {
+  logger = createLogger(argv.log);
   const verboseLevel = argv.v ? 1 : 0;
   const target = argv.path;
   logger.info(`Loading test(s) in /${target}.`);
@@ -80,6 +82,10 @@ yargs
         alias: 'verbose',
         describe: 'Set display to verbose mode',
         boolean: true,
+      },
+      log: {
+        describe: 'Specify log directory to write test result.',
+        normalize: true,
       }
     }),
     runTest,

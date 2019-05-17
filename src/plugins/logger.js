@@ -1,10 +1,7 @@
 const path = require('path');
-const logDir = process.env.LOG_DIR || '.'
-const logFile = path.join(logDir, `MTT-${new Date().toISOString().replace(/[ ]/g, '-')}.log`);
+const SimpleNodeLogger = require('simple-node-logger');
 
-const logger = require('simple-node-logger').createSimpleFileLogger(logFile);
-
-logger.logExecution = function(tests) {
+const logExecution = function(tests) {
     this.info('Operations: ');
 
     let totalTC = 0;
@@ -64,7 +61,7 @@ function logSummary(summary) {
     this.info(`>> ${overallPercentage}% passed.`)
 }
 
-logger.logTestReport = async function(report) {
+const logTestReport = async function(report) {
     try {
         report.results.forEach(async result => logResult.bind(this)(await result));
         logSummary.bind(this)(await report.summary);
@@ -73,4 +70,20 @@ logger.logTestReport = async function(report) {
     }
 }
 
-module.exports = logger
+
+
+module.exports = function(logDir) {
+    let logger;
+    if (logDir) {
+        const logFile = path.join(logDir, `MTT-${new Date().toISOString().replace(/[ ]/g, '-')}.log`);
+        logger = SimpleNodeLogger.createSimpleFileLogger(logFile);
+        
+    } else {
+        logger = SimpleNodeLogger.createSimpleLogger();
+        logger.setLevel('fatal');
+    }
+    logger.logTestReport = logTestReport;
+    logger.logExecution = logExecution;
+
+    return logger;
+};
