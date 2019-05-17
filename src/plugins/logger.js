@@ -70,8 +70,6 @@ const logTestReport = async function(report) {
     }
 }
 
-
-
 module.exports = function(logDir) {
     let logger;
     if (logDir) {
