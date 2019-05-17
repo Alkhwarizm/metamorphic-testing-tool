@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const yargs = require('yargs');
+const logger = require('../plugins/logger');
 const TestExecutor = require('../core/TestExecutor');
 
 function runTestFile(target) {
@@ -11,12 +12,16 @@ function runTestFile(target) {
 function runTestDir(target) {
   const filepaths = fs.readdirSync(target).map(file => path.join(process.cwd(), target, file));
   const tests = filepaths.map(file => require(file).test).reverse();
+  logger.info(`Executing following ${tests.length} tests...`);
+  filepaths.forEach(filepath => logger.info(filepath));
+  logger.logExecution(tests);
   return TestExecutor.executeAll(tests);
 }
 
 function runTest(argv) {
   const verboseLevel = argv.v ? 1 : 0;
   const target = argv.path;
+  logger.info(`Loading test(s) in /${target}.`);
   if (fs.existsSync(target)) {
     let testReport;
     if (fs.lstatSync(target).isDirectory()) {
@@ -24,15 +29,25 @@ function runTest(argv) {
     } else if (fs.lstatSync(target).isFile()) {
       testReport = runTestFile(target);
     } else {
-      throw `${target} is not a file nor a directory.`
+      const msg = `${target} is not a file nor a directory.`
+      logger.error(msg);
+      throw msg;
     }
+    logger.logTestReport(testReport);
     TestExecutor.displayTestReport(testReport, verboseLevel);
 
     testReport.isPassed().then((val) => {
-      if (!val) process.exitCode = 1;
+      if (!val) {
+        logger.info('Test failed.');
+        process.exitCode = 1;
+      } else {
+        logger.info('Test Passed.');
+      }
     })
   } else {
-    throw "Path doesn't exist.";
+    const msg = "Path doesn't exist.";
+    logger.error(msg);
+    throw msg;
   }
 }
 

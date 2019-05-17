@@ -16,6 +16,7 @@
     "lodash": "^4.17.11",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
+    "simple-node-logger": "^18.12.22",
     "yargs": "^13.2.2"
   },
   "devDependencies": {
