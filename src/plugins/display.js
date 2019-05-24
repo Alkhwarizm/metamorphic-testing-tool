@@ -96,7 +96,7 @@ function showTestCase(testcase, testIdx) {
     );
     testcase.inputs.forEach((input, idx) => {
       const textInput = JSON.stringify(input);
-      const textOutput = testcase.outputs[idx];
+      const textOutput = JSON.stringify(testcase.outputs[idx]);
       ui.div(
         { text: chalk`{${color} ${idx === 0 ? 'source' : `foll_${idx}`}}`, ...columnSetting[0] },
         { text: chalk`{${color} ${textInput}}`, ...columnSetting[1] },
