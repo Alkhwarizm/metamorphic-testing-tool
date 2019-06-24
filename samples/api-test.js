@@ -3,7 +3,7 @@ const helper = MetamorphicTest.helper;
 const test = new MetamorphicTest();
 
 const TEST_URI = 'https://kitsu.io/api/edge/categories'
-const ACCESS_TOKEN = 'Bearer d6147d8858b12f4a60c1ebc4e4aaff4aea6c465a88e0d5fe29d0142479ccb409';
+const ACCESS_TOKEN = 'Bearer bf3e3da617889eec5e41fb7e4725779b55ba9c33ac5036f47dc6fa835b6ce8e5';
 
 const parameters = {
     'page[limit]': 10,

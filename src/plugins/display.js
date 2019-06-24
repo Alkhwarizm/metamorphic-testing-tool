@@ -79,32 +79,25 @@ function showTestCase(testcase, testIdx) {
     { width: 8, padding: [0, 1, 0, 0] },
     {}, {}, { width: 6 },
   ];
-  if (testcase.error) {
-    ui.div(
-      { text: chalk`{red ${testIdx}}`, ...columnSetting[0] },
-      { text: chalk`{red.inverse Error:} {redBright ${testcase.error}}`, ...columnSetting[1] },
-    );
-  } else {
-    const color = testcase.result ? 'green' : 'red';
-    const textResult = testcase.result ? 'Passed' : 'Failed';
+  const color = testcase.result ? 'green' : 'red';
+  const textResult = testcase.result ? 'Passed' : 'Failed';
 
+  ui.div(
+    { text: chalk`{${color}.underline TC ${testIdx}}`, ...columnSetting[0] },
+    { text: chalk`{${color}.underline Input}`, ...columnSetting[1] },
+    { text: chalk`{${color}.underline Output}`, ...columnSetting[2] },
+    { text: chalk`{${color}.bold ${textResult}}`, ...columnSetting[3] },
+  );
+  testcase.inputs.forEach((input, idx) => {
+    const textInput = JSON.stringify(input);
+    const textOutput = testcase.error || JSON.stringify(testcase.outputs[idx]);
     ui.div(
-      { text: chalk`{${color}.underline TC ${testIdx}}`, ...columnSetting[0] },
-      { text: chalk`{${color}.underline Input}`, ...columnSetting[1] },
-      { text: chalk`{${color}.underline Output}`, ...columnSetting[2] },
-      { text: chalk`{${color}.bold ${textResult}}`, ...columnSetting[3] },
+      { text: chalk`{${color} ${idx === 0 ? 'source' : `foll_${idx}`}}`, ...columnSetting[0] },
+      { text: chalk`{${color} ${textInput}}`, ...columnSetting[1] },
+      { text: chalk`{${color} ${textOutput}}`, ...columnSetting[2] },
+      { text: chalk`{${color} }`, ...columnSetting[3] },
     );
-    testcase.inputs.forEach((input, idx) => {
-      const textInput = JSON.stringify(input);
-      const textOutput = JSON.stringify(testcase.outputs[idx]);
-      ui.div(
-        { text: chalk`{${color} ${idx === 0 ? 'source' : `foll_${idx}`}}`, ...columnSetting[0] },
-        { text: chalk`{${color} ${textInput}}`, ...columnSetting[1] },
-        { text: chalk`{${color} ${textOutput}}`, ...columnSetting[2] },
-        { text: chalk`{${color} }`, ...columnSetting[3] },
-      );
-    });
-  }
+  });
   log(ui.toString());
 }
 

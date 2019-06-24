@@ -54,7 +54,10 @@ class MetamorphicTesting {
             report.result = relation.assert(output);
             return report;
           })
-          .catch(err => ({ error: err.statusCode || err || 'unknown error' }));
+          .catch(err => ({ 
+            error: err || 'unknown error',
+            inputs,
+          }));
 
         results.push(outputs);
       }
