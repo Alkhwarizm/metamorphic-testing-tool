@@ -1,0 +1,27 @@
+{
+  "name": "mt-tools-prototype",
+  "version": "1.0.0",
+  "description": "Metamorphic testing tool prototype for RESTful Web API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/.bin/eslint ./src/ index.js",
+    "lintfix": "./node_modules/.bin/eslint --fix ./src/ index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "cliui": "^4.1.0",
+    "lodash": "^4.17.11",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "simple-node-logger": "^18.12.22",
+    "yargs": "^13.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0"
+  }
+}
